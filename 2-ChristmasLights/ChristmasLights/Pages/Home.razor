@@ -1,0 +1,78 @@
+﻿@page "/"
+@using Parser
+@rendermode InteractiveServer
+<PageTitle>Home</PageTitle>
+<h1 class="mb-2">Merry Christmas</h1>
+<br/>
+<div>
+@foreach (var colour in currentColours)
+{
+    <LightBulb BulbColour="@colour"/>
+}
+</div>
+<br/>
+<div>
+    <label>Enter your lighting instructions:</label>
+    <br/>
+    <textarea  rows="2" cols="80" @bind="InstructionText">
+        white,red
+        red,white
+    </textarea>
+    <br/>
+    <button @onclick="SwitchOnLights" class="btn btn-danger">
+        Go
+    </button>
+</div>
+
+@code{
+
+    string[][] currentInstructions = [
+        ["white","red","white"],
+        ["red","white","red"]
+    ];
+    string[] currentColours = ["red","red","red"];
+    string instructionText = "";
+
+    string InstructionText
+    {
+        get => instructionText;
+        set { instructionText = value; SwitchOnLights(); }
+    }
+
+    Task? LightsTask;
+
+    bool running = true;
+
+    protected override void OnInitialized() => SwitchOnLights();
+
+    void SwitchOnLights()
+    {
+        currentInstructions = Parse.ParseLightingInstructions(InstructionText);
+        CancelLastRun();
+        if (running)
+        {
+            LightsTask = Task.Run(async () =>
+                                  {
+                                      int row = 0;
+                                      while (!cts.IsCancellationRequested)
+                                      {
+                                          await Task.Delay(1000);
+                                          row = (row + 1) % currentInstructions.Length;
+                                          currentColours = currentInstructions[row];
+                                          await InvokeAsync(StateHasChanged);
+                                      }
+                                  },
+                                  cts.Token);
+        }
+        StateHasChanged();
+    }
+
+    void CancelLastRun()
+    {
+        try { cts.Cancel(); }
+        catch (Exception e) { Console.WriteLine(e); }
+        finally { cts = new CancellationTokenSource(); }
+    }
+
+    CancellationTokenSource cts = new();
+}

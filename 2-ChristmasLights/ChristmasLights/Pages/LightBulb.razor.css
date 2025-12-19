@@ -1,0 +1,63 @@
+:root {
+    --bulb-color: red;
+}
+
+body {
+    background: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Light container */
+.light {
+    position: relative;
+    width: 40px;
+    height: 60px;
+    display: inline-block;
+}
+
+/* Bulb */
+.bulb {
+    width: 100%;
+    height: 100%;
+    background-color: var(--bulb-color, red); /* Change color here */
+    border-radius: 50% 50% 45% 45%;
+    box-shadow: 0 0 20px var(--bulb-color, red);
+    animation: glow 1.5s infinite alternate;
+}
+
+/* Bulb glow animation */
+@keyframes glow {
+    from {
+        box-shadow: 0 0 10px var(--bulb-color, red);
+        opacity: 0.9;
+    }
+    to {
+        box-shadow: 0 0 25px var(--bulb-color, red);
+        opacity: 1;
+    }
+}
+
+/* Bulb cap */
+.cap {
+    position: absolute;
+    top: -10px;
+    left: 8px;
+    width: 24px;
+    height: 12px;
+    background: #555;
+    border-radius: 3px;
+}
+
+/* Wire */
+.wire {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    width: 4px;
+    height: 20px;
+    background: #333;
+    transform: translateX(-50%);
+}

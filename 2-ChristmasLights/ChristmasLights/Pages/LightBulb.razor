@@ -1,0 +1,11 @@
+<div class="light" style="--bulb-color: @BulbColour;">
+    <div class="wire"></div>
+    <div class="cap"></div>
+    <div class="bulb"></div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string BulbColour { get; set; } = "limegreen";
+}
